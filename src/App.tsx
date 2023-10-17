@@ -1,9 +1,17 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
+import { Text } from "./components/Text";
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Hello World!</Text>
+      <Text
+        style={{ fontStyle: "italic" }}
+        onPress={() => {
+          Alert.alert("Hello");
+        }}
+      >
+        Hello world!
+      </Text>
     </View>
   );
 }
