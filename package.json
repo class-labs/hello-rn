@@ -7,9 +7,10 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint --max-warnings 0 .",
     "format": "prettier --write src",
     "format:check": "prettier --check src",
-    "test": "npm run typecheck && npm run format:check"
+    "test": "npm run typecheck && npm run lint && npm run format:check"
   },
   "dependencies": {
     "expo": "~49.0.13",
@@ -19,9 +20,15 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/react": "~18.2.14",
+    "eslint": "^8.51.0",
+    "eslint-config-react-app": "^7.0.1",
     "prettier": "^3.0.3",
     "typescript": "~5.1.6"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
   },
   "prettier": {},
   "private": true
