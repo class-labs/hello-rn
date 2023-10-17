@@ -1,6 +1,12 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Home } from "lucide-react-native";
+import {
+  Home as HomeIcon,
+  Search as SearchIcon,
+  Bell as NotificationsIcon,
+  Mail as MessagesIcon,
+  User as ProfileIcon,
+} from "lucide-react-native";
 
 import { HomeScreen } from "./screens/HomeScreen";
 import { SearchScreen } from "./screens/SearchScreen";
@@ -10,15 +16,36 @@ import { ProfileScreen } from "./screens/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 
+function getIconForRoute(routeName: string) {
+  switch (routeName) {
+    case "Home": {
+      return HomeIcon;
+    }
+    case "Search": {
+      return SearchIcon;
+    }
+    case "Notifications": {
+      return NotificationsIcon;
+    }
+    case "Messages": {
+      return MessagesIcon;
+    }
+    default: {
+      return ProfileIcon;
+    }
+  }
+}
+
 export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
-            return <Home size={size} color={color} />;
+            const Icon = getIconForRoute(route.name);
+            return <Icon size={size} color={color} />;
           },
-          tabBarActiveTintColor: "tomato",
+          tabBarActiveTintColor: "blue",
           tabBarInactiveTintColor: "gray",
         })}
       >
