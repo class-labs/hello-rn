@@ -1,11 +1,13 @@
 {
   "name": "hello-rn",
   "version": "1.0.0",
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
-    "ios": "expo start --ios"
+    "ios": "expo start --ios",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run typecheck"
   },
   "dependencies": {
     "expo": "~49.0.13",
@@ -14,7 +16,9 @@
     "react-native": "0.72.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@types/react": "~18.2.14",
+    "typescript": "~5.1.6"
   },
   "private": true
 }
