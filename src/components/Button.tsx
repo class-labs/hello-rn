@@ -1,9 +1,44 @@
-// Task 1
-// Don't use the built-in Button, instead use Pressable and Text
-// Use a View for padding, border, etc (if you need)
-// Style this how you like, or use this example:
-// https://github.com/sstur/sstur/assets/369384/50f9928e-d245-465c-921f-de01d2559c88
+import { Pressable, StyleSheet, Text } from "react-native";
 
-export function Button() {
-  // TODO: Implement a button
+type Props = {
+  children: string;
+  onPress?: () => void;
+  borderRadius?: "sm" | "md" | "lg";
+};
+
+const borderRadii = {
+  sm: 5,
+  md: 10,
+  lg: 16,
+};
+
+export function Button(props: Props) {
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.container,
+        {
+          opacity: pressed ? 0.7 : 1,
+          borderRadius: borderRadii[props.borderRadius ?? "sm"],
+        },
+      ]}
+      onPress={props.onPress}
+    >
+      <Text style={[styles.text]}>{props.children}</Text>
+    </Pressable>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#4E46DC",
+    paddingVertical: 12,
+    paddingHorizontal: 22,
+    alignSelf: "stretch",
+  },
+  text: {
+    fontSize: 18,
+    color: "white",
+    textAlign: "center",
+  },
+});

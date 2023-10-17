@@ -1,17 +1,16 @@
 import { Alert, StyleSheet, View } from "react-native";
-import { Text } from "./components/Text";
+import { Button } from "./components/Button";
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text
-        style={{ fontStyle: "italic" }}
+      <Button
         onPress={() => {
-          Alert.alert("Hello");
+          Alert.alert("Hello!");
         }}
       >
-        Hello world!
-      </Text>
+        Press me
+      </Button>
     </View>
   );
 }
@@ -22,5 +21,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    padding: 10,
   },
 });
