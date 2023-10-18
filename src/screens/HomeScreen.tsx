@@ -1,9 +1,14 @@
-import { Text, View } from "react-native";
+import { Text } from "../components/Text";
+import { TextInput } from "../components/TextInput";
+import { VStack } from "../components/VStack";
 
 export function HomeScreen() {
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Home Screen</Text>
-    </View>
+    <VStack flex={1} backgroundColor="background" p="m">
+      <Text variant="header" color="red">
+        Home Screen
+      </Text>
+      <TextInput />
+    </VStack>
   );
 }

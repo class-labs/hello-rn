@@ -16,6 +16,7 @@
     "@react-navigation/bottom-tabs": "^6.5.9",
     "@react-navigation/native": "^6.1.8",
     "@react-navigation/native-stack": "^6.9.14",
+    "@shopify/restyle": "^2.4.2",
     "expo": "~49.0.13",
     "expo-status-bar": "~1.6.0",
     "lucide-react-native": "^0.288.0",
