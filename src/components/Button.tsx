@@ -1,30 +1,32 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  PressableProps,
+  StyleProp,
+  TextStyle,
+} from "react-native";
 
-type Props = {
+type Props = Omit<PressableProps, "children"> & {
+  textStyle?: StyleProp<TextStyle>;
   children: string;
-  onPress?: () => void;
-  borderRadius?: "sm" | "md" | "lg";
-};
-
-const borderRadii = {
-  sm: 5,
-  md: 10,
-  lg: 16,
 };
 
 export function Button(props: Props) {
+  const { style, textStyle, ...otherProps } = props;
   return (
     <Pressable
-      style={({ pressed }) => [
-        styles.container,
-        {
-          opacity: pressed ? 0.7 : 1,
-          borderRadius: borderRadii[props.borderRadius ?? "sm"],
-        },
-      ]}
-      onPress={props.onPress}
+      {...otherProps}
+      style={(state) => {
+        const customStyle = typeof style === "function" ? style(state) : style;
+        return [
+          styles.container,
+          { opacity: state.pressed ? 0.7 : 1 },
+          customStyle,
+        ];
+      }}
     >
-      <Text style={[styles.text]}>{props.children}</Text>
+      <Text style={[styles.text, textStyle]}>{props.children}</Text>
     </Pressable>
   );
 }
@@ -35,6 +37,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 22,
     alignSelf: "stretch",
+    borderRadius: 5,
   },
   text: {
     fontSize: 18,
