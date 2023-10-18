@@ -12,9 +12,11 @@ import { Link } from "../components/Link";
 import { Form } from "../components/Form";
 import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useKeyboard } from "../hooks/useKeyboard";
 
 export function SignupScreen() {
   const inputEmailRef = useRef<RNTextInput>(null);
+  const keyboardShown = useKeyboard();
   const {
     control,
     handleSubmit,
@@ -104,6 +106,12 @@ export function SignupScreen() {
           Don't have an account? <Link to="Signup">Sign up</Link>
         </Text>
       </Form>
+      <View
+        style={{
+          height: keyboardShown ? Keyboard.metrics()?.height : 0,
+          backgroundColor: "red",
+        }}
+      />
     </ScrollView>
   );
 }
