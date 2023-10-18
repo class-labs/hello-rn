@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import {
   TextInput as TextInputBase,
   StyleSheet,
@@ -6,10 +7,12 @@ import {
 
 type Props = TextInputProps;
 
-export function TextInput(props: Props) {
+export const TextInput = forwardRef<TextInputBase, Props>((props, ref) => {
   const { style, ...otherProps } = props;
-  return <TextInputBase style={[styles.base, style]} {...otherProps} />;
-}
+  return (
+    <TextInputBase ref={ref} style={[styles.base, style]} {...otherProps} />
+  );
+});
 
 const styles = StyleSheet.create({
   base: {
