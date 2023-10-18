@@ -3,6 +3,7 @@ import {
   TextInput as RNTextInput,
   Alert,
   Keyboard,
+  View,
 } from "react-native";
 import { TextInput } from "../components/TextInput";
 import { Button } from "../components/Button";
@@ -40,7 +41,11 @@ export function SignupScreen() {
       keyboardShouldPersistTaps="handled"
       keyboardDismissMode="interactive"
     >
-      <Form style={{ gap: 20, padding: 20 }}>
+      <Form style={{ gap: 24, padding: 30 }}>
+        <View style={{ paddingVertical: 50 }}>
+          <Text>Imagine our logo here</Text>
+        </View>
+        <Text style={{ fontSize: 38 }}>Signup form</Text>
         <Controller
           control={control}
           name="name"
