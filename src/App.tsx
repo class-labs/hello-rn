@@ -1,18 +1,12 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ThemeProvider } from "@shopify/restyle";
+
+import { theme } from "./theme";
+import { Home } from "./screens/Home";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Hello World!</Text>
-    </View>
+    <ThemeProvider theme={theme}>
+      <Home />
+    </ThemeProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
