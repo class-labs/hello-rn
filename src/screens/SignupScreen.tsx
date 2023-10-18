@@ -1,4 +1,9 @@
-import { ScrollView, TextInput as RNTextInput, Alert } from "react-native";
+import {
+  ScrollView,
+  TextInput as RNTextInput,
+  Alert,
+  Keyboard,
+} from "react-native";
 import { TextInput } from "../components/TextInput";
 import { Button } from "../components/Button";
 import { Text } from "../components/Text";
@@ -26,10 +31,15 @@ export function SignupScreen() {
   const onSubmit = handleSubmit((data) => {
     console.log("Submitted:", data);
     Alert.alert("Thanks!");
+    Keyboard.dismiss();
   });
 
   return (
-    <ScrollView style={{ backgroundColor: "white" }}>
+    <ScrollView
+      style={{ backgroundColor: "white" }}
+      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="interactive"
+    >
       <Form style={{ gap: 20, padding: 20 }}>
         <Controller
           control={control}
