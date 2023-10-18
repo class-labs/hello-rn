@@ -12,11 +12,19 @@ import { Link } from "../components/Link";
 import { Form } from "../components/Form";
 import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useKeyboard } from "../hooks/useKeyboard";
+import Animated, {
+  useAnimatedKeyboard,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 
 export function SignupScreen() {
   const inputEmailRef = useRef<RNTextInput>(null);
-  const keyboardShown = useKeyboard();
+  const keyboard = useAnimatedKeyboard();
+  const translateStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: -keyboard.height.value }],
+    };
+  });
   const {
     control,
     handleSubmit,
@@ -43,75 +51,73 @@ export function SignupScreen() {
       keyboardShouldPersistTaps="handled"
       keyboardDismissMode="interactive"
     >
-      <Form style={{ gap: 24, padding: 30 }}>
-        <View style={{ paddingVertical: 50 }}>
-          <Text>Imagine our logo here</Text>
-        </View>
-        <Text style={{ fontSize: 38 }}>Signup form</Text>
-        <Controller
-          control={control}
-          name="name"
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              placeholder="Enter your name"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              autoCorrect={false}
-              returnKeyType="next"
-              onSubmitEditing={() => {
-                inputEmailRef.current?.focus();
-              }}
-            />
+      <Animated.View style={translateStyle}>
+        <Form style={{ gap: 24, padding: 30 }}>
+          <View style={{ paddingVertical: 50 }}>
+            <Text>Imagine our logo here</Text>
+          </View>
+          <Text style={{ fontSize: 38 }}>Signup form</Text>
+          <Controller
+            control={control}
+            name="name"
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                placeholder="Enter your name"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                autoCorrect={false}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  inputEmailRef.current?.focus();
+                }}
+              />
+            )}
+          />
+          {errors.name && (
+            <Text style={{ color: "red" }}>This is required.</Text>
           )}
-        />
-        {errors.name && <Text style={{ color: "red" }}>This is required.</Text>}
 
-        <Controller
-          control={control}
-          name="emailAddress"
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              ref={inputEmailRef}
-              placeholder="Enter your email"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              spellCheck={false}
-              autoCorrect={false}
-              returnKeyType="next"
-            />
+          <Controller
+            control={control}
+            name="emailAddress"
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                ref={inputEmailRef}
+                placeholder="Enter your email"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                spellCheck={false}
+                autoCorrect={false}
+                returnKeyType="next"
+              />
+            )}
+          />
+          {errors.emailAddress && (
+            <Text style={{ color: "red" }}>This is required.</Text>
           )}
-        />
-        {errors.emailAddress && (
-          <Text style={{ color: "red" }}>This is required.</Text>
-        )}
 
-        <TextInput placeholder="Enter your phone number" />
-        <TextInput placeholder="Enter your password" secureTextEntry={true} />
-        <TextInput
-          placeholder="Enter your password again"
-          secureTextEntry={true}
-        />
-        <Button onPress={onSubmit}>Submit</Button>
-        <Text>
-          Don't have an account? <Link to="Signup">Sign up</Link>
-        </Text>
-      </Form>
-      <View
-        style={{
-          height: keyboardShown ? Keyboard.metrics()?.height : 0,
-          backgroundColor: "red",
-        }}
-      />
+          <TextInput placeholder="Enter your phone number" />
+          <TextInput placeholder="Enter your password" secureTextEntry={true} />
+          <TextInput
+            placeholder="Enter your password again"
+            secureTextEntry={true}
+          />
+          <Button onPress={onSubmit}>Submit</Button>
+          <Text>
+            Don't have an account? <Link to="Signup">Sign up</Link>
+          </Text>
+        </Form>
+      </Animated.View>
     </ScrollView>
   );
 }
