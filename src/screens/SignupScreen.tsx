@@ -6,6 +6,16 @@ import { Link } from "../components/Link";
 import { Form } from "../components/Form";
 import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+const schema = z.object({
+  name: z.string().min(1, { message: "Required" }),
+  emailAddress: z.string(),
+  phoneNumber: z.string(),
+  password: z.string().min(3),
+  passwordConfirm: z.string(),
+});
 
 export function SignupScreen() {
   const inputEmailRef = useRef<RNTextInput>(null);
@@ -14,6 +24,7 @@ export function SignupScreen() {
     handleSubmit,
     formState: { errors },
   } = useForm({
+    resolver: zodResolver(schema),
     defaultValues: {
       name: "",
       emailAddress: "",
@@ -79,11 +90,54 @@ export function SignupScreen() {
         )}
 
         <TextInput placeholder="Enter your phone number" />
-        <TextInput placeholder="Enter your password" secureTextEntry={true} />
-        <TextInput
-          placeholder="Enter your password again"
-          secureTextEntry={true}
+
+        <Controller
+          control={control}
+          name="password"
+          rules={{
+            required: true,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              placeholder="Enter your password"
+              secureTextEntry={true}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              returnKeyType="next"
+            />
+          )}
         />
+        {errors.password && (
+          <Text style={{ color: "red" }}>This is required.</Text>
+        )}
+
+        <Controller
+          control={control}
+          name="passwordConfirm"
+          rules={{
+            validate: (password2, formData) => {
+              console.log({ password2, formData });
+              if (formData.password !== password2) {
+                return false;
+              }
+              return true;
+            },
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              placeholder="Enter your password again"
+              secureTextEntry={true}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
+        />
+        {errors.passwordConfirm && (
+          <Text style={{ color: "red" }}>This is required.</Text>
+        )}
+
         <Button onPress={onSubmit}>Submit</Button>
         <Text>
           Don't have an account? <Link to="Signup">Sign up</Link>
