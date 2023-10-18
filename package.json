@@ -1,7 +1,6 @@
 {
-  "name": "HelloRN",
+  "name": "hello-rn",
   "version": "0.0.1",
-  "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
@@ -32,5 +31,6 @@
   },
   "engines": {
     "node": ">=16"
-  }
+  },
+  "private": true
 }
