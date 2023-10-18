@@ -1,15 +1,4 @@
-import { View, StyleSheet, ViewProps } from "react-native";
+import { createBox } from "@shopify/restyle";
+import { Theme } from "../theme";
 
-type Props = ViewProps;
-
-export function Form(props: Props) {
-  const { style, ...otherProps } = props;
-  return <View style={[styles.base, style]} {...otherProps} />;
-}
-
-const styles = StyleSheet.create({
-  base: {
-    flexDirection: "column",
-    flex: 1,
-  },
-});
+export const Form = createBox<Theme>();
