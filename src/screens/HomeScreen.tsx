@@ -4,31 +4,24 @@ import Animated, {
   Easing,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withTiming,
 } from "react-native-reanimated";
 
 export function HomeScreen() {
-  const deltaX = useSharedValue(0);
-  const deltaY = useSharedValue(0);
+  const scale = useSharedValue(1);
 
   const specialStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: deltaX.value }, { translateY: deltaY.value }],
+      transform: [{ scale: scale.value }],
     };
   });
 
-  const pan = Gesture.Pan()
+  const pan = Gesture.Pinch()
     .onUpdate((event) => {
-      deltaX.value = event.translationX;
-      deltaY.value = event.translationY;
+      scale.value = event.scale;
     })
     .onEnd(() => {
-      deltaX.value = withTiming(0, {
-        duration: 250,
-        easing: Easing.inOut(Easing.cubic),
-      });
-      deltaY.value = withTiming(0, {
+      scale.value = withTiming(1, {
         duration: 250,
         easing: Easing.inOut(Easing.cubic),
       });
