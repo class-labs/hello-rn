@@ -6,6 +6,7 @@ import {
   StyleProp,
   TextStyle,
 } from "react-native";
+import { useTheme } from "../support/ThemeProvider";
 
 type Props = Omit<PressableProps, "children"> & {
   textStyle?: StyleProp<TextStyle>;
@@ -14,6 +15,7 @@ type Props = Omit<PressableProps, "children"> & {
 
 export function Button(props: Props) {
   const { style, textStyle, ...otherProps } = props;
+  const theme = useTheme();
   return (
     <Pressable
       {...otherProps}
@@ -26,7 +28,9 @@ export function Button(props: Props) {
         ];
       }}
     >
-      <Text style={[styles.text, textStyle]}>{props.children}</Text>
+      <Text style={[styles.text, { fontSize: theme.fontSize }, textStyle]}>
+        {props.children}
+      </Text>
     </Pressable>
   );
 }
@@ -40,7 +44,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   text: {
-    fontSize: 18,
     color: "white",
     textAlign: "center",
   },
