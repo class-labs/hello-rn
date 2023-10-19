@@ -1,8 +1,8 @@
+import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSequence,
   withTiming,
   Easing,
 } from "react-native-reanimated";
@@ -11,16 +11,24 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function HomeScreen() {
   const distance = useSharedValue(0);
+  const items = Array.from({ length: 4 });
+  const [currentlyTop, setCurrentlyTop] = useState(3);
 
   const specialStyle = useAnimatedStyle(() => {
     return {
-      // TODO: What style should change in response to the shared value?
+      transform: [{ translateX: distance.value }],
     };
   });
 
   const onBoxPress = () => {
-    // TODO: kick off the animation
-    // You'll need to describe how `distance` changes over time.
+    distance.value = 0;
+    distance.value = withTiming(400, {
+      duration: 300,
+      easing: Easing.in(Easing.quad),
+    });
+    setTimeout(() => {
+      setCurrentlyTop((value) => value - 1);
+    }, 300);
   };
 
   return (
@@ -32,30 +40,17 @@ export function HomeScreen() {
     >
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <View style={{ width: 120, height: 120 }}>
-          <AnimatedPressable
-            style={[specialStyle, styles.box]}
-            onPress={onBoxPress}
-          >
-            <Text style={styles.boxText}>4</Text>
-          </AnimatedPressable>
-          <AnimatedPressable
-            style={[specialStyle, styles.box]}
-            onPress={onBoxPress}
-          >
-            <Text style={styles.boxText}>3</Text>
-          </AnimatedPressable>
-          <AnimatedPressable
-            style={[specialStyle, styles.box]}
-            onPress={onBoxPress}
-          >
-            <Text style={styles.boxText}>2</Text>
-          </AnimatedPressable>
-          <AnimatedPressable
-            style={[specialStyle, styles.box]}
-            onPress={onBoxPress}
-          >
-            <Text style={styles.boxText}>1</Text>
-          </AnimatedPressable>
+          {items.map((_, index) =>
+            index > currentlyTop ? null : (
+              <AnimatedPressable
+                key={index}
+                style={[index === currentlyTop && specialStyle, styles.box]}
+                onPress={index === currentlyTop ? onBoxPress : undefined}
+              >
+                <Text style={styles.boxText}>{4 - index}</Text>
+              </AnimatedPressable>
+            ),
+          )}
         </View>
       </View>
     </View>
