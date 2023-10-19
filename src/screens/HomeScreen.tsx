@@ -24,7 +24,7 @@ export function HomeScreen() {
         padding: 20,
       }}
     >
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Animated.View
           style={[
             specialStyle,
