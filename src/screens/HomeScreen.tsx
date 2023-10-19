@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -7,18 +7,21 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 
-import { Button } from "../components/Button";
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function HomeScreen() {
-  const rotation = useSharedValue(0);
-  const opacity = useSharedValue(1);
+  const distance = useSharedValue(0);
 
   const specialStyle = useAnimatedStyle(() => {
     return {
-      opacity: opacity.value,
-      transform: [{ rotate: `${rotation.value}deg` }],
+      // TODO: What style should change in response to the shared value?
     };
   });
+
+  const onBoxPress = () => {
+    // TODO: kick off the animation
+    // You'll need to describe how `distance` changes over time.
+  };
 
   return (
     <View
@@ -28,28 +31,50 @@ export function HomeScreen() {
       }}
     >
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Animated.View
-          style={[
-            specialStyle,
-            { width: 120, height: 120, backgroundColor: "#4E46DC" },
-          ]}
-        />
+        <View style={{ width: 120, height: 120 }}>
+          <AnimatedPressable
+            style={[specialStyle, styles.box]}
+            onPress={onBoxPress}
+          >
+            <Text style={styles.boxText}>4</Text>
+          </AnimatedPressable>
+          <AnimatedPressable
+            style={[specialStyle, styles.box]}
+            onPress={onBoxPress}
+          >
+            <Text style={styles.boxText}>3</Text>
+          </AnimatedPressable>
+          <AnimatedPressable
+            style={[specialStyle, styles.box]}
+            onPress={onBoxPress}
+          >
+            <Text style={styles.boxText}>2</Text>
+          </AnimatedPressable>
+          <AnimatedPressable
+            style={[specialStyle, styles.box]}
+            onPress={onBoxPress}
+          >
+            <Text style={styles.boxText}>1</Text>
+          </AnimatedPressable>
+        </View>
       </View>
-      <Button
-        onPress={() => {
-          rotation.value = 0;
-          rotation.value = withTiming(360, {
-            duration: 500,
-            easing: Easing.inOut(Easing.quad),
-          });
-          opacity.value = withSequence(
-            withTiming(0, { duration: 250 }),
-            withTiming(1, { duration: 250 }),
-          );
-        }}
-      >
-        Animate
-      </Button>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  box: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: 120,
+    height: 120,
+    backgroundColor: "#4E46DC",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  boxText: {
+    color: "white",
+    fontSize: 24,
+  },
+});
