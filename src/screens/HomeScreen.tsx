@@ -1,82 +1,59 @@
-import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
-  Easing,
-  runOnJS,
+  useAnimatedScrollHandler,
 } from "react-native-reanimated";
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
 export function HomeScreen() {
-  const distance = useSharedValue(0);
-  const items = Array.from({ length: 4 });
-  const [currentlyTop, setCurrentlyTop] = useState(3);
-  const removeCurrentTop = () => {
-    setCurrentlyTop((value) => value - 1);
-  };
+  const progress = useSharedValue(0);
 
-  const specialStyle = useAnimatedStyle(() => {
+  const scrollIndicatorStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: distance.value }],
+      width: `${progress.value}%`,
     };
   });
 
-  const onBoxPress = () => {
-    distance.value = 0;
-    distance.value = withTiming(
-      400,
-      {
-        duration: 300,
-        easing: Easing.in(Easing.quad),
-      },
-      () => {
-        runOnJS(removeCurrentTop)();
-      },
-    );
-  };
+  const items = Array.from({ length: 30 });
+
+  const onScroll = useAnimatedScrollHandler({
+    onScroll: ({ contentOffset, contentSize, layoutMeasurement }) => {
+      const scrollPosY = Math.max(contentOffset.y, 0);
+      const scrollViewHeight = layoutMeasurement.height;
+      const contentHeight = contentSize.height;
+      const maxScrollPosY = Math.max(contentHeight - scrollViewHeight, 0);
+      progress.value = (scrollPosY / maxScrollPosY) * 100;
+    },
+  });
 
   return (
-    <View
-      style={{
-        flex: 1,
-        padding: 20,
-      }}
-    >
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <View style={{ width: 120, height: 120 }}>
-          {items.map((_, index) =>
-            index > currentlyTop ? null : (
-              <AnimatedPressable
-                key={index}
-                style={[index === currentlyTop && specialStyle, styles.box]}
-                onPress={index === currentlyTop ? onBoxPress : undefined}
-              >
-                <Text style={styles.boxText}>{4 - index}</Text>
-              </AnimatedPressable>
-            ),
-          )}
-        </View>
+    <View style={{ flex: 1 }}>
+      <View>
+        <Animated.View
+          style={[scrollIndicatorStyle, { height: 4, backgroundColor: "blue" }]}
+        />
       </View>
+      <Animated.ScrollView
+        onScroll={onScroll}
+        style={{ backgroundColor: "white" }}
+        contentContainerStyle={{
+          padding: 20,
+          gap: 16,
+        }}
+        scrollEventThrottle={16}
+      >
+        {items.map((_, index) => (
+          <Text key={index} style={{ fontSize: 16 }}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla arcu
+            justo, ultrices vel tempus vel, iaculis in risus. Praesent id sem
+            erat. Pellentesque metus velit, lacinia nec efficitur ut, tempor et
+            purus. Vestibulum lacus ex, dictum iaculis varius quis, gravida id
+            justo. Nam malesuada aliquet turpis vel semper. Mauris tincidunt
+            ligula sed purus congue interdum. Nunc aliquet turpis in dolor
+            ullamcorper aliquet.
+          </Text>
+        ))}
+      </Animated.ScrollView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  box: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: 120,
-    height: 120,
-    backgroundColor: "#4E46DC",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  boxText: {
-    color: "white",
-    fontSize: 24,
-  },
-});
