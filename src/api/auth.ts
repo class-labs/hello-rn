@@ -4,6 +4,7 @@ export async function login(
   username: string,
   password: string,
 ): Promise<Session | null> {
+  await sleep(1000);
   if (username === "bob" && password === "123") {
     return {
       token: Math.floor(Math.random() * 1000000).toString(36),
@@ -15,4 +16,8 @@ export async function login(
     };
   }
   return null;
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
