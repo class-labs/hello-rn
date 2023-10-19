@@ -10,13 +10,16 @@ import Animated, {
 import { Button } from "../components/Button";
 
 export function HomeScreen() {
-  const position = useSharedValue(0);
+  const rotation = useSharedValue(0);
+  const opacity = useSharedValue(1);
 
   const specialStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: position.value }],
+      opacity: opacity.value,
+      transform: [{ rotate: `${rotation.value}deg` }],
     };
   });
+
   return (
     <View
       style={{
@@ -34,15 +37,14 @@ export function HomeScreen() {
       </View>
       <Button
         onPress={() => {
-          position.value = withSequence(
-            withTiming(200, {
-              duration: 500,
-              easing: Easing.inOut(Easing.quad),
-            }),
-            withTiming(0, {
-              duration: 500,
-              easing: Easing.inOut(Easing.quad),
-            }),
+          rotation.value = 0;
+          rotation.value = withTiming(360, {
+            duration: 500,
+            easing: Easing.inOut(Easing.quad),
+          });
+          opacity.value = withSequence(
+            withTiming(0, { duration: 250 }),
+            withTiming(1, { duration: 250 }),
           );
         }}
       >
