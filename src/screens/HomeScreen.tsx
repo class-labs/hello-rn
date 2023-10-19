@@ -5,6 +5,7 @@ import Animated, {
   useSharedValue,
   withTiming,
   Easing,
+  runOnJS,
 } from "react-native-reanimated";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -13,6 +14,9 @@ export function HomeScreen() {
   const distance = useSharedValue(0);
   const items = Array.from({ length: 4 });
   const [currentlyTop, setCurrentlyTop] = useState(3);
+  const removeCurrentTop = () => {
+    setCurrentlyTop((value) => value - 1);
+  };
 
   const specialStyle = useAnimatedStyle(() => {
     return {
@@ -22,13 +26,16 @@ export function HomeScreen() {
 
   const onBoxPress = () => {
     distance.value = 0;
-    distance.value = withTiming(400, {
-      duration: 300,
-      easing: Easing.in(Easing.quad),
-    });
-    setTimeout(() => {
-      setCurrentlyTop((value) => value - 1);
-    }, 300);
+    distance.value = withTiming(
+      400,
+      {
+        duration: 300,
+        easing: Easing.in(Easing.quad),
+      },
+      () => {
+        runOnJS(removeCurrentTop)();
+      },
+    );
   };
 
   return (
