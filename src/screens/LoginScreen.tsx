@@ -3,34 +3,20 @@ import { Form } from "../components/Form";
 import { TextInput } from "../components/TextInput";
 import { Button } from "../components/Button";
 import { useState } from "react";
-import { login } from "../api/auth";
 import { Text } from "../components/Text";
 import { useSession } from "../support/SessionProvider";
-import { Alert } from "react-native";
+
+// Task 17
+// Setup GraphQL mutation for Login
 
 export function LoginScreen() {
   const navigation = useNavigation<any>();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState(false);
   const { setSession } = useSession();
 
   const onSubmit = () => {
-    setLoading(true);
-    login(username, password)
-      .then((result) => {
-        if (result) {
-          // setSession(result);
-          // navigation.navigate("Main");
-          Alert.alert(JSON.stringify(result));
-        } else {
-          setError(new Error("Invalid username or password"));
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    // TODO: Invoke GraphQL mutation login()
   };
 
   return (
