@@ -6,6 +6,7 @@ import { useState } from "react";
 import { login } from "../api/auth";
 import { Text } from "../components/Text";
 import { useSession } from "../support/SessionProvider";
+import { Alert } from "react-native";
 
 export function LoginScreen() {
   const navigation = useNavigation<any>();
@@ -20,8 +21,9 @@ export function LoginScreen() {
     login(username, password)
       .then((result) => {
         if (result) {
-          setSession(result);
-          navigation.navigate("Main");
+          // setSession(result);
+          // navigation.navigate("Main");
+          Alert.alert(JSON.stringify(result));
         } else {
           setError(new Error("Invalid username or password"));
         }

@@ -1,23 +1,28 @@
 import { Session } from "../types/Session";
 
+const query = `
+mutation Login($username: String!, $password: String!) {
+  login(username: $username, password: $password) {
+    token
+    user {
+      id
+      name
+      username
+    }
+  }
+}
+`;
+
 export async function login(
   username: string,
-  password: string,
+  password: string
 ): Promise<Session | null> {
-  await sleep(1000);
-  if (username === "bob" && password === "123") {
-    return {
-      token: Math.floor(Math.random() * 1000000).toString(36),
-      user: {
-        id: "1",
-        username: "bob",
-        name: "Bob Jones",
-      },
-    };
-  }
-  return null;
-}
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  const variables = { username, password };
+  const response = await fetch("https://chatter.web-api.dev/graphql", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ query, variables }),
+  });
+  const { data } = await response.json();
+  return data.login;
 }
