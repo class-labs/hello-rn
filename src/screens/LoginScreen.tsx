@@ -29,8 +29,12 @@ export function LoginScreen() {
   const [login, { loading, error }] = useMutation(LOGIN, {
     onCompleted: (data) => {
       const session = data.login;
-      setSession(session);
-      navigation.navigate("Main");
+      if (session) {
+        setSession(session);
+        navigation.navigate("Main");
+      } else {
+        throw new Error("Invalid login");
+      }
     },
   });
 
