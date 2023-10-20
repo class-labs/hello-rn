@@ -2,11 +2,15 @@
   "name": "hello-rn",
   "version": "0.0.1",
   "scripts": {
+    "start": "react-native start",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint .",
-    "start": "react-native start",
-    "test": "jest"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint --max-warnings 0 .",
+    "unit": "jest",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "npm run typecheck && npm run lint && npm run unit && npm run format:check"
   },
   "dependencies": {
     "react": "18.2.0",
