@@ -5,6 +5,7 @@ import { Button } from "../components/Button";
 import { useState } from "react";
 import { login } from "../api/auth";
 import { Text } from "../components/Text";
+import { useSession } from "../support/SessionProvider";
 
 export function LoginScreen() {
   const navigation = useNavigation<any>();
@@ -12,12 +13,14 @@ export function LoginScreen() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(false);
+  const { setSession } = useSession();
 
   const onSubmit = () => {
     setLoading(true);
     login(username, password)
       .then((result) => {
         if (result) {
+          setSession(result);
           navigation.navigate("Main");
         } else {
           setError(new Error("Invalid username or password"));

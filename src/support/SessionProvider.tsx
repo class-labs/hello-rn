@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
 import { Session } from "../types/Session";
 
 type SessionContext = {
@@ -6,14 +6,18 @@ type SessionContext = {
   setSession: (session: Session | null) => void;
 };
 
-export function SessionProvider() {
-  // Task 16
-  // Implement SessionProvider purely to store the current session object (or null)
-  // and pass that down the render tree to any component that needs it.
-  // Remember to update LoginScreen to set the session.
-  // Update the HomeScreen to display the name of the user that is logged in
+const Context = createContext<SessionContext | null>(null);
+
+export function SessionProvider(props: { children: ReactNode }) {
+  const [session, setSession] = useState<Session | null>(null);
+  const context = { session, setSession };
+  return <Context.Provider value={context}>{props.children}</Context.Provider>;
 }
 
 export function useSession() {
-  // TODO
+  const sessionContext = useContext(Context);
+  if (sessionContext === null) {
+    throw Error("useSession must be within a SessionProvider");
+  }
+  return sessionContext;
 }
