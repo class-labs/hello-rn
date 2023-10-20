@@ -37,13 +37,7 @@
     "root": true,
     "extends": "@react-native"
   },
-  "prettier": {
-    "arrowParens": "avoid",
-    "bracketSameLine": true,
-    "bracketSpacing": false,
-    "singleQuote": true,
-    "trailingComma": "all"
-  },
+  "prettier": {},
   "jest": {
     "preset": "react-native"
   },
