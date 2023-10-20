@@ -1,12 +1,28 @@
 import { Text, View } from "react-native";
-import { useSession } from "../support/SessionProvider";
+import { gql } from "@apollo/client";
+
+// Task 18
+// Query the list of posts from GraphQL and display them on the screen in a
+// simple FlatList
+
+const GET_POSTS = gql`
+  query GetPosts {
+    posts {
+      id
+      author {
+        id
+        name
+      }
+      content
+      likeCount
+    }
+  }
+`;
 
 export function HomeScreen() {
-  const { session } = useSession();
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>Home Screen</Text>
-      <Text>You are logged in as {session?.user.name}</Text>
     </View>
   );
 }

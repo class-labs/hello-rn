@@ -5,9 +5,20 @@ import { Button } from "../components/Button";
 import { useState } from "react";
 import { Text } from "../components/Text";
 import { useSession } from "../support/SessionProvider";
+import { gql, useMutation } from "@apollo/client";
 
-// Task 17
-// Setup GraphQL mutation for Login
+const LOGIN = gql`
+  mutation Login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      token
+      user {
+        id
+        name
+        username
+      }
+    }
+  }
+`;
 
 export function LoginScreen() {
   const navigation = useNavigation<any>();
@@ -15,8 +26,20 @@ export function LoginScreen() {
   const [password, setPassword] = useState("");
   const { setSession } = useSession();
 
+  const [login, { loading, error }] = useMutation(LOGIN, {
+    onCompleted: (data) => {
+      const session = data.login;
+      if (session) {
+        setSession(session);
+        navigation.navigate("Main");
+      } else {
+        throw new Error("Invalid login");
+      }
+    },
+  });
+
   const onSubmit = () => {
-    // TODO: Invoke GraphQL mutation login()
+    login({ variables: { username, password } });
   };
 
   return (
