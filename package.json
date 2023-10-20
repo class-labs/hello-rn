@@ -12,10 +12,12 @@
     "test": "npm run typecheck && npm run lint && npm run format:check"
   },
   "dependencies": {
+    "@apollo/client": "^3.8.6",
     "@react-native-async-storage/async-storage": "^1.19.3",
     "@react-navigation/bottom-tabs": "^6.5.10",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.15",
+    "graphql": "^15.8.0",
     "lucide-react-native": "^0.288.0",
     "react": "18.2.0",
     "react-native": "0.72.6",
@@ -32,12 +34,16 @@
     "@tsconfig/react-native": "^3.0.0",
     "@types/react": "^18.0.24",
     "@types/react-test-renderer": "^18.0.0",
+    "apollo": "^2.34.0",
     "eslint": "^8.19.0",
     "eslint-config-react-app": "^7.0.1",
     "metro-react-native-babel-preset": "0.76.8",
     "prettier": "^2.4.1",
     "react-test-renderer": "18.2.0",
     "typescript": "4.8.4"
+  },
+  "overrides": {
+    "graphql": "^15.8.0"
   },
   "eslintConfig": {
     "extends": "react-app"
