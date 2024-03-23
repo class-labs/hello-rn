@@ -14,12 +14,18 @@ dependencies:
   '@tamagui/config':
     specifier: ^1.92.1
     version: 1.92.1(react-dom@18.2.0)(react-native-reanimated@3.8.1)(react-native@0.73.6)(react@18.2.0)
+  '@tamagui/font-inter':
+    specifier: ^1.92.1
+    version: 1.92.1(react@18.2.0)
   expo:
     specifier: ~50.0.14
     version: 50.0.14(@babel/core@7.24.3)(@react-native/babel-preset@0.73.21)
   expo-constants:
     specifier: ~15.4.5
     version: 15.4.5(expo@50.0.14)
+  expo-font:
+    specifier: ~11.10.3
+    version: 11.10.3(expo@50.0.14)
   expo-linking:
     specifier: ~6.2.2
     version: 6.2.2(expo@50.0.14)
