@@ -1,7 +1,7 @@
 {
   "name": "mw-portal",
   "version": "0.0.0",
-  "main": "expo-router/entry",
+  "main": "src/index.ts",
   "scripts": {
     "dev": "npm run watchman:clean && expo start",
     "watchman:clean": "command -v watchman >/dev/null && watchman watch-del \"$PWD\" >/dev/null || true",
@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.1.3",
+    "@intl/t": "^1.1.0",
     "expo": "~50.0.14",
     "expo-constants": "~15.4.5",
     "expo-linking": "~6.2.2",
@@ -39,6 +40,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-t": "^1.7.1",
     "prettier": "^3.2.5",
     "typescript": "^5.3.0"
   },

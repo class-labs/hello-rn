@@ -4,7 +4,8 @@
     "import",
     "@typescript-eslint",
     "react-hooks",
-    "functions"
+    "functions",
+    "t"
   ],
   "extends": [
     "eslint:recommended",
@@ -107,6 +108,7 @@
     "prefer-arrow-callback": "warn",
     "prefer-const": "warn",
     "radix": "warn",
-    "functions/top-level-fn-decl": "warn"
+    "functions/top-level-fn-decl": "warn",
+    "t/string-literal": "warn"
   }
 }
