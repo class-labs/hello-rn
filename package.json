@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "npm run watchman:clean && expo start",
     "watchman:clean": "command -v watchman >/dev/null && watchman watch-del \"$PWD\" >/dev/null || true",
+    "clean": "npm run watchman:clean && rm -rf ./.expo ./dist",
     "typecheck": "tsc --noEmit",
     "lint": "eslint --max-warnings 0 .",
     "format": "prettier --write .",
