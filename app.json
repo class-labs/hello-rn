@@ -23,6 +23,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
