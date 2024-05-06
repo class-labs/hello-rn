@@ -15,8 +15,10 @@
   "dependencies": {
     "@intl/t": "^1.1.0",
     "@tamagui/config": "^1.96.0",
+    "@tamagui/font-inter": "^1.96.0",
     "expo": "~50.0.17",
     "expo-constants": "~15.4.6",
+    "expo-font": "~11.10.3",
     "expo-linking": "~6.2.2",
     "expo-router": "~3.4.10",
     "expo-status-bar": "~1.11.1",
