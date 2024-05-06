@@ -6,7 +6,9 @@
     "start": "npm run clean:watchman && expo start",
     "clean:watchman": "command -v watchman >/dev/null && watchman watch-del \"$PWD\" >/dev/null || true",
     "typecheck": "tsc --noEmit",
-    "test": "npm run typecheck"
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "npm run typecheck && npm run format:check"
   },
   "dependencies": {
     "expo": "~50.0.17",
@@ -22,7 +24,11 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.2.45",
+    "prettier": "^3.2.5",
     "typescript": "^5.3.0"
+  },
+  "prettier": {
+    "singleQuote": true
   },
   "private": true
 }
