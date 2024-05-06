@@ -1,7 +1,7 @@
 {
   "name": "hello-rn",
   "version": "0.0.0",
-  "main": "expo-router/entry",
+  "main": "src/index.ts",
   "scripts": {
     "start": "npm run clean:watchman && expo start",
     "clean:watchman": "command -v watchman >/dev/null && watchman watch-del \"$PWD\" >/dev/null || true",
