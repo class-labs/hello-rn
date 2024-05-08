@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "hello-rn",
+    "name": "Hello RN",
     "slug": "hello-rn",
+    "scheme": "hello-rn",
     "version": "0.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,9 +20,6 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
     }
   }
 }
