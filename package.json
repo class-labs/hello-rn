@@ -10,7 +10,7 @@
     "lint": "eslint --max-warnings 0 .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "npm run typecheck && npm run lint && npm run format:check"
+    "test": "pnpm run '/^(typecheck|lint|format:check)$/'"
   },
   "dependencies": {
     "@intl/t": "^1.1.0",
@@ -50,9 +50,6 @@
     "eslint-plugin-t": "^1.7.1",
     "prettier": "^3.2.5",
     "typescript": "~5.3.3"
-  },
-  "overrides": {
-    "react-dom": "18.2.0"
   },
   "prettier": {
     "singleQuote": true,
