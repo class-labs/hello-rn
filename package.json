@@ -4,6 +4,7 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "expo start",
+    "clean": "rm -rf .expo dist tsconfig.tsbuildinfo",
     "typecheck": "tsc --noEmit",
     "lint": "eslint --max-warnings 0 .",
     "format": "prettier --write .",
