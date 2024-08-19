@@ -6,8 +6,10 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "unit": "jest",
-    "test": "npm run typecheck && npm run unit"
+    "test": "npm run typecheck && npm run format:check && npm run unit"
   },
   "dependencies": {
     "react": "18.3.1",
@@ -24,7 +26,7 @@
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.6.3",
     "jest": "^29.6.3",
-    "prettier": "2.8.8",
+    "prettier": "^3.3.3",
     "react-test-renderer": "18.3.1",
     "typescript": "~5.3.3"
   },
@@ -33,6 +35,16 @@
   },
   "jest": {
     "preset": "react-native"
+  },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "app.json",
+        "options": {
+          "parser": "json-stringify"
+        }
+      }
+    ]
   },
   "private": true
 }
