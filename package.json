@@ -1,7 +1,6 @@
 {
-  "name": "HelloReactNative",
+  "name": "hello-rn",
   "version": "0.0.1",
-  "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
@@ -33,5 +32,6 @@
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "yarn@3.6.4"
+  "packageManager": "yarn@3.6.4",
+  "private": true
 }
