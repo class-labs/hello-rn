@@ -63,3 +63,7 @@ npm-debug.log
 
 # testing
 /coverage
+
+# local env files
+.env*.local
+.env
