@@ -1,41 +1,64 @@
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 export function SignupForm() {
   return (
     <View style={{ paddingHorizontal: 20, gap: 10 }}>
-      <Text style={{ fontSize: 32 }}>Sign in to your account</Text>
-      <Text>Email address</Text>
-      <TextInput
-        style={{ borderWidth: 1, borderColor: "#9d9d9d", padding: 10 }}
-      />
-      <Text>Password</Text>
-      <TextInput
-        style={{ borderWidth: 1, borderColor: "#9d9d9d", padding: 10 }}
-      />
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
-          <View
-            style={{
-              width: 18,
-              height: 18,
-              borderWidth: 1,
-              borderColor: "#9d9d9d",
-              borderRadius: 3,
-            }}
-          />
-          <Text>Remember me</Text>
-        </View>
-        <Text>Forgot password?</Text>
+      <View style={{ marginVertical: 14 }}>
+        <Text style={{ fontSize: 32 }}>Sign in to your account</Text>
       </View>
-      <Pressable style={{ padding: 10, backgroundColor: "purple" }}>
-        <Text style={{ color: "white", textAlign: "center" }}>Sign in</Text>
+      <Text style={styles.textFieldLabel}>Email address</Text>
+      <TextInput style={styles.textFieldInput} />
+      <Text style={styles.textFieldLabel}>Password</Text>
+      <TextInput style={styles.textFieldInput} />
+      <View style={styles.horizontalFieldRow}>
+        <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+          <View style={styles.checkBox} />
+          <Text style={{ fontSize: 16 }}>Remember me</Text>
+        </View>
+        <Text style={{ fontSize: 16, color: "#4E46DC", fontWeight: "bold" }}>
+          Forgot password?
+        </Text>
+      </View>
+      <Pressable style={styles.submitButton}>
+        <Text style={styles.submitButtonText}>Sign in</Text>
       </Pressable>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  textFieldLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  textFieldInput: {
+    borderWidth: 1,
+    borderColor: "#6b7280",
+    padding: 10,
+    borderRadius: 8,
+  },
+  horizontalFieldRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  checkBox: {
+    width: 18,
+    height: 18,
+    borderWidth: 1,
+    borderColor: "#6b7280",
+    borderRadius: 3,
+  },
+  submitButton: {
+    padding: 14,
+    backgroundColor: "#4E46DC",
+    borderRadius: 8,
+  },
+  submitButtonText: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+});
