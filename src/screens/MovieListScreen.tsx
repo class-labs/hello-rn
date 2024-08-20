@@ -27,7 +27,7 @@ function MovieItem(props: Props) {
     <Pressable
       onPress={() => {
         // @ts-ignore
-        navigation.navigate("MovieDetails");
+        navigation.navigate("MovieDetails", { movie: props.movie });
       }}
     >
       <View
