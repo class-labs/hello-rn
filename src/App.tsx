@@ -1,11 +1,17 @@
-import { StyleSheet, Text, View } from "react-native";
-import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
+import { Button, StyleSheet, Text, View } from "react-native";
 
 export function App() {
+  const [count, setCount] = useState(0);
   return (
     <View style={styles.container}>
-      <Text>Hello world!</Text>
-      <StatusBar style="auto" />
+      <Text>Count: {count}</Text>
+      <Button
+        onPress={() => {
+          setCount(count + 1);
+        }}
+        title="⬆️"
+      />
     </View>
   );
 }
