@@ -1,24 +1,42 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { useState } from "react";
+import {
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
 type Props = {
   onSuccess: () => void;
 };
 
 export function SignupForm(props: Props) {
-  // Task 8:
-  // When the user has successfully signed in, you should invoke:
-  // props.onSuccess()
-  // Remember: the "successful" login is bob@example.com with password 123
-  // If the login fails, show some kind of message.
+  const [emailAddress, setEmailAddress] = useState("");
+  const [password, setPassword] = useState("");
   return (
     <View style={{ paddingHorizontal: 20, gap: 10 }}>
       <View style={{ marginVertical: 14 }}>
         <Text style={{ fontSize: 32 }}>Sign in to your account</Text>
       </View>
       <Text style={styles.textFieldLabel}>Email address</Text>
-      <TextInput style={styles.textFieldInput} />
+      <TextInput
+        style={styles.textFieldInput}
+        keyboardType="email-address"
+        autoCapitalize="none"
+        autoCorrect={false}
+        spellCheck={false}
+        value={emailAddress}
+        onChangeText={setEmailAddress}
+      />
       <Text style={styles.textFieldLabel}>Password</Text>
-      <TextInput style={styles.textFieldInput} />
+      <TextInput
+        style={styles.textFieldInput}
+        secureTextEntry={true}
+        value={password}
+        onChangeText={setPassword}
+      />
       <View style={styles.horizontalFieldRow}>
         <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
           <View style={styles.checkBox} />
@@ -28,7 +46,16 @@ export function SignupForm(props: Props) {
           Forgot password?
         </Text>
       </View>
-      <Pressable style={styles.submitButton}>
+      <Pressable
+        style={styles.submitButton}
+        onPress={() => {
+          if (emailAddress === "bob@example.com" && password === "123") {
+            props.onSuccess();
+          } else {
+            Alert.alert("Invalid login");
+          }
+        }}
+      >
         <Text style={styles.submitButtonText}>Sign in</Text>
       </Pressable>
     </View>
