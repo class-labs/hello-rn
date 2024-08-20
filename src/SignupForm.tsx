@@ -1,6 +1,15 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-export function SignupForm() {
+type Props = {
+  onSuccess: () => void;
+};
+
+export function SignupForm(props: Props) {
+  // Task 8:
+  // When the user has successfully signed in, you should invoke:
+  // props.onSuccess()
+  // Remember: the "successful" login is bob@example.com with password 123
+  // If the login fails, show some kind of message.
   return (
     <View style={{ paddingHorizontal: 20, gap: 10 }}>
       <View style={{ marginVertical: 14 }}>
