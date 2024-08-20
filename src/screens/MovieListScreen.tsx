@@ -1,18 +1,56 @@
-import { Button, Text, View } from "react-native";
+import { Button, Image, Pressable, ScrollView, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import { movies } from "../data/movies";
+import { Movie } from "../types/Movie";
 
-// Task 10
-// Render the list of movies here. Don't worry about styling for now.
-// When the user taps on a movie, we should navigate to the MovieDetails screen.
-// For this task, don't change the MovieDetails screen at all.
-// We're just implementing this MovieList screen here.
 export function MovieListScreen() {
   const navigation = useNavigation();
   return (
-    <View style={{ alignItems: "center", padding: 20 }}>
-      <Text>TODO: Movie list will go here</Text>
-    </View>
+    <ScrollView>
+      <View style={{ padding: 20, gap: 20 }}>
+        {movies.map((movie) => (
+          <MovieItem key={movie.id} movie={movie} />
+        ))}
+      </View>
+    </ScrollView>
+  );
+}
+
+type Props = {
+  movie: Movie;
+};
+
+function MovieItem(props: Props) {
+  const navigation = useNavigation();
+  return (
+    <Pressable
+      onPress={() => {
+        // @ts-ignore
+        navigation.navigate("MovieDetails");
+      }}
+    >
+      <View
+        style={{
+          padding: 10,
+          borderWidth: 1,
+          borderColor: "#d7d7d7",
+          borderRadius: 7,
+          flexDirection: "row",
+          gap: 10,
+        }}
+      >
+        <Image
+          source={{ uri: props.movie.poster_path }}
+          style={{ width: 60, height: 100 }}
+          resizeMode="cover"
+        />
+        <View style={{ gap: 8, flexShrink: 1 }}>
+          <Text style={{ fontWeight: "bold" }}>{props.movie.title}</Text>
+          <Text>Release date: {props.movie.release_date}</Text>
+          <Text>Rating: {props.movie.vote_average}</Text>
+        </View>
+      </View>
+    </Pressable>
   );
 }
