@@ -1,9 +1,8 @@
-import { Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { AboutScreen } from "./screens/AboutScreen";
-import { HomeScreen } from "./screens/HomeScreen";
+import { MovieDetailsScreen } from "./screens/MovieDetailsScreen";
+import { MovieListScreen } from "./screens/MovieListScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,8 +18,8 @@ export function App() {
           },
         }}
       >
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="About" component={AboutScreen} />
+        <Stack.Screen name="MovieList" component={MovieListScreen} />
+        <Stack.Screen name="MovieDetails" component={MovieDetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
