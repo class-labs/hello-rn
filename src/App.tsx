@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 
+// Task 6:
+// Add another button to decrement the count
 export function App() {
   const [count, setCount] = useState(0);
   return (
