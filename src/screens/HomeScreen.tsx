@@ -1,10 +1,9 @@
-import { Home } from "@tamagui/lucide-icons";
-import { Button, YStack } from "tamagui";
+import { Paragraph, YStack } from "tamagui";
 
 export function HomeScreen() {
   return (
     <YStack flex={1} justifyContent="center" alignItems="center">
-      <Button icon={<Home />}>Hello world!</Button>
+      <Paragraph>Hello world!</Paragraph>
     </YStack>
   );
 }
