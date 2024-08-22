@@ -24,7 +24,8 @@ function ThemedNavigationContainer() {
           headerTintColor: theme.color.get(),
           headerBackTitleVisible: false,
           contentStyle: {
-            backgroundColor: theme.background.get(),
+            backgroundColor:
+              colorScheme === "dark" ? theme.background.get() : "white",
           },
         }}
       >
