@@ -75,6 +75,7 @@ export function HomeScreen() {
           <TextArea
             onFocus={onFocus}
             onBlur={onBlur}
+            minHeight={180}
             placeholder="Enter notes"
           />
         </View>
