@@ -16,11 +16,9 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
-import { EventEmitter } from "./EventEmitter";
-
 export function useFormScroll() {
   const focusedInputRef = useRef<TextInput | null>(null);
-  const [layoutEmitter] = useState(() => new EventEmitter<{ layout: [] }>());
+  const [layoutEmitter] = useState(() => new LayoutEmitter());
   const keyboard = useAnimatedKeyboard();
   const futureKeyboardHeight = useSharedValue(0);
   const spaceForKeyboard = useDerivedValue(() => {
@@ -46,24 +44,24 @@ export function useFormScroll() {
     const showSubscription = Keyboard.addListener(
       "keyboardWillShow",
       (event) => {
-        const { endCoordinates } = event;
+        const { endCoordinates, duration } = event;
         futureKeyboardHeight.value = endCoordinates.height;
+        // TODO: Remove this
         const startTime = Date.now();
-        // TODO: The maximum wait time should be event.duration
+        // This will resolve either on the next layout of the keyboard spacer or
+        // when the keyboard has finished its animation, whichever happens
+        // first.
         const layoutPromise = new Promise<void>((resolve) => {
-          layoutEmitter.once("layout", resolve);
+          layoutEmitter.onNextLayout(resolve, { timeout: duration });
         });
         const element = focusedInputRef.current;
         if (!element) {
           return;
         }
-        console.log("Keyboard:", { endCoordinates });
         const keyboardTopPosition = endCoordinates.screenY;
         element.measureInWindow((x, y, width, height) => {
-          console.log("Element:", { x, y, width, height });
           const elementBottomPosition = y + height;
           if (elementBottomPosition <= keyboardTopPosition) {
-            console.log("No scroll needed.");
             return;
           }
           const amountToScroll = elementBottomPosition - keyboardTopPosition;
@@ -91,10 +89,28 @@ export function useFormScroll() {
 
   const keyboardSpacer = (
     <Animated.View
-      onLayout={() => layoutEmitter.emit("layout")}
+      onLayout={() => layoutEmitter.emitLayout()}
       style={{ height: spaceForKeyboard }}
     />
   );
 
   return { animatedScrollViewRef, onFocus, onBlur, keyboardSpacer };
+}
+
+class LayoutEmitter {
+  listeners = new Set<() => void>();
+
+  emitLayout() {
+    this.listeners.forEach((listener) => listener());
+  }
+
+  onNextLayout(listener: () => void, options: { timeout: number }) {
+    const listenerWithCleanup = () => {
+      clearTimeout(timeoutId);
+      this.listeners.delete(listenerWithCleanup);
+      listener();
+    };
+    this.listeners.add(listenerWithCleanup);
+    const timeoutId = setTimeout(listenerWithCleanup, options.timeout);
+  }
 }
