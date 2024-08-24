@@ -8,12 +8,18 @@ import { useFormScroll } from "../support/useFormScroll";
 export function HomeScreen() {
   const safeAreaInsets = useSafeAreaInsets();
 
-  const { animatedScrollViewRef, onFocus, onBlur, keyboardSpacer } =
-    useFormScroll();
+  const {
+    animatedScrollViewRef,
+    animatedProps,
+    onFocus,
+    onBlur,
+    keyboardSpacer,
+  } = useFormScroll();
 
   return (
     <Animated.ScrollView
       ref={animatedScrollViewRef}
+      animatedProps={animatedProps}
       keyboardShouldPersistTaps="handled"
       keyboardDismissMode={Platform.OS === "ios" ? "interactive" : "on-drag"}
     >

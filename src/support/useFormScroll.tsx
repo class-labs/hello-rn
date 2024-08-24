@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Keyboard,
   NativeSyntheticEvent,
@@ -6,14 +6,17 @@ import {
   TextInputFocusEventData,
 } from "react-native";
 import Animated, {
+  Easing,
   KeyboardState,
   runOnUI,
   scrollTo,
   useAnimatedKeyboard,
+  useAnimatedProps,
   useAnimatedRef,
   useDerivedValue,
   useScrollViewOffset,
   useSharedValue,
+  withTiming,
 } from "react-native-reanimated";
 
 export function useFormScroll() {
@@ -29,31 +32,37 @@ export function useFormScroll() {
   });
 
   const animatedScrollViewRef = useAnimatedRef<Animated.ScrollView>();
-  const scrollOffset = useScrollViewOffset(animatedScrollViewRef);
+  const currentScrollY = useScrollViewOffset(animatedScrollViewRef);
+  const offsetY = useSharedValue(0);
+
+  const animatedProps = useAnimatedProps(() => {
+    return {
+      contentOffset: { y: offsetY.value, x: 0 },
+    };
+  });
 
   useEffect(() => {
-    const scrollByAmount = (amountToScroll: number) => {
-      "worklet";
-      const currentScrollOffset = scrollOffset.value;
+    const scrollToPosition = (scrollTo: number, duration: number) => {
+      offsetY.value = currentScrollY.value;
+      offsetY.value = withTiming(scrollTo, {
+        duration,
+        // TODO: Tweak this
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      });
+    };
+    const scrollByAmount = (amountToScroll: number, duration: number) => {
+      const currentScrollOffset = currentScrollY.value;
       const targetScrollOffset = currentScrollOffset + amountToScroll;
       console.log(`Current scroll offset: ${currentScrollOffset}`);
       console.log(`Amount to scroll: ${amountToScroll}`);
       console.log(`Scroll to: ${targetScrollOffset}`);
-      scrollTo(animatedScrollViewRef, 0, targetScrollOffset, true);
+      scrollToPosition(targetScrollOffset, duration);
     };
     const showSubscription = Keyboard.addListener(
       "keyboardWillShow",
       (event) => {
         const { endCoordinates, duration } = event;
         futureKeyboardHeight.value = endCoordinates.height;
-        // TODO: Remove this
-        const startTime = Date.now();
-        // This will resolve either on the next layout of the keyboard spacer or
-        // when the keyboard has finished its animation, whichever happens
-        // first.
-        const layoutPromise = new Promise<void>((resolve) => {
-          layoutEmitter.onNextLayout(resolve, { timeout: duration });
-        });
         const element = focusedInputRef.current;
         if (!element) {
           return;
@@ -65,13 +74,7 @@ export function useFormScroll() {
             return;
           }
           const amountToScroll = elementBottomPosition - keyboardTopPosition;
-          // We need to defer the scroll until the spacer at the bottom of the
-          // ScrollView has time to render, otherwise our scrollTo will fail in
-          // cases where there isn't enough available content to scroll.
-          layoutPromise.then(() => {
-            console.log(`Time to layout: ${Date.now() - startTime}`);
-            runOnUI(scrollByAmount)(amountToScroll);
-          });
+          scrollByAmount(amountToScroll, duration);
         });
       },
     );
@@ -94,7 +97,13 @@ export function useFormScroll() {
     />
   );
 
-  return { animatedScrollViewRef, onFocus, onBlur, keyboardSpacer };
+  return {
+    animatedScrollViewRef,
+    animatedProps,
+    onFocus,
+    onBlur,
+    keyboardSpacer,
+  };
 }
 
 class LayoutEmitter {
