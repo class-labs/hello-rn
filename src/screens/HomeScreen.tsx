@@ -1,6 +1,6 @@
-import { useNavigation } from "@react-navigation/native";
+import { Platform } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
-  Anchor,
   Button,
   Input,
   Label,
@@ -11,18 +11,25 @@ import {
 } from "tamagui";
 
 export function HomeScreen() {
-  const navigation = useNavigation();
+  const safeAreaInsets = useSafeAreaInsets();
   return (
-    <ScrollView>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode={Platform.OS === "ios" ? "interactive" : "on-drag"}
+      automaticallyAdjustKeyboardInsets={true}
+    >
       <View
-        flex={1}
         paddingHorizontal={16}
-        paddingTop={16}
-        paddingBottom={24}
+        paddingTop={20}
+        paddingBottom={Math.max(safeAreaInsets.bottom, 20)}
         gap={20}
       >
+        <Paragraph fontSize={15}>
+          Welcome to our awesome app. Sign up below to create an account. By
+          signing up you agree to our terms and services.
+        </Paragraph>
         <View gap={4}>
-          <Label>Name</Label>
+          <Label lineHeight={26}>Name</Label>
           <Input
             autoCorrect={false}
             returnKeyType="done"
@@ -31,7 +38,7 @@ export function HomeScreen() {
           />
         </View>
         <View gap={4}>
-          <Label>Email</Label>
+          <Label lineHeight={26}>Email</Label>
           <Input
             autoCapitalize="none"
             autoCorrect={false}
@@ -41,7 +48,7 @@ export function HomeScreen() {
           />
         </View>
         <View gap={4}>
-          <Label>Username</Label>
+          <Label lineHeight={26}>Username</Label>
           <Input
             autoCapitalize="none"
             autoCorrect={false}
@@ -50,16 +57,16 @@ export function HomeScreen() {
           />
         </View>
         <View gap={4}>
-          <Label>Password</Label>
+          <Label lineHeight={26}>Password</Label>
           <Input
             secureTextEntry={true}
-            returnKeyType="go"
+            returnKeyType="done"
             placeholder="Enter your password"
           />
         </View>
         <View gap={4}>
-          <Label>Notes</Label>
-          <TextArea minHeight={120} placeholder="Enter notes" />
+          <Label lineHeight={26}>Notes</Label>
+          <TextArea minHeight={180} placeholder="Enter notes" />
         </View>
         <Button theme="blue" onPress={() => {}}>
           Sign Up
