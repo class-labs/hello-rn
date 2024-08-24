@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Keyboard,
   NativeSyntheticEvent,
@@ -16,8 +16,11 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
+import { EventEmitter } from "./EventEmitter";
+
 export function useFormScroll() {
   const focusedInputRef = useRef<TextInput | null>(null);
+  const [layoutEmitter] = useState(() => new EventEmitter<{ layout: [] }>());
   const keyboard = useAnimatedKeyboard();
   const futureKeyboardHeight = useSharedValue(0);
   const spaceForKeyboard = useDerivedValue(() => {
@@ -45,6 +48,11 @@ export function useFormScroll() {
       (event) => {
         const { endCoordinates } = event;
         futureKeyboardHeight.value = endCoordinates.height;
+        const startTime = Date.now();
+        // TODO: The maximum wait time should be event.duration
+        const layoutPromise = new Promise<void>((resolve) => {
+          layoutEmitter.once("layout", resolve);
+        });
         const element = focusedInputRef.current;
         if (!element) {
           return;
@@ -59,11 +67,13 @@ export function useFormScroll() {
             return;
           }
           const amountToScroll = elementBottomPosition - keyboardTopPosition;
-          // We need to defer this by a small amount so the spacer at the bottom
-          // of the ScrollView has time to render, otherwise our scrollTo might
-          // fail since there won't be enough available content to scroll.
-          // TODO: Deterministically compute how long to wait.
-          setTimeout(() => runOnUI(scrollByAmount)(amountToScroll), 10);
+          // We need to defer the scroll until the spacer at the bottom of the
+          // ScrollView has time to render, otherwise our scrollTo will fail in
+          // cases where there isn't enough available content to scroll.
+          layoutPromise.then(() => {
+            console.log(`Time to layout: ${Date.now() - startTime}`);
+            runOnUI(scrollByAmount)(amountToScroll);
+          });
         });
       },
     );
@@ -79,7 +89,12 @@ export function useFormScroll() {
     focusedInputRef.current = null;
   };
 
-  const keyboardSpacer = <Animated.View style={{ height: spaceForKeyboard }} />;
+  const keyboardSpacer = (
+    <Animated.View
+      onLayout={() => layoutEmitter.emit("layout")}
+      style={{ height: spaceForKeyboard }}
+    />
+  );
 
   return { animatedScrollViewRef, onFocus, onBlur, keyboardSpacer };
 }
