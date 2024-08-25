@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import {
+  EmitterSubscription,
   Keyboard,
   NativeSyntheticEvent,
   TextInput,
@@ -53,31 +54,69 @@ export function useFormScroll() {
   });
 
   useEffect(() => {
-    const showSubscription = Keyboard.addListener(
-      "keyboardWillShow",
-      (event) => {
+    const subscriptions = new Set<EmitterSubscription>();
+
+    const onNextDidShow = (callback: () => void) => {
+      const cleanup = () => {
+        subscriptions.delete(subscription);
+        subscription.remove();
+      };
+      const subscription = Keyboard.addListener("keyboardDidShow", () => {
+        cleanup();
+        callback();
+      });
+      subscriptions.add(subscription);
+      return cleanup;
+    };
+
+    subscriptions.add(
+      Keyboard.addListener("keyboardWillShow", (event) => {
+        console.log("keyboardWillShow");
         const { endCoordinates } = event;
         const element = focusedInputRef.current;
         if (!element) {
           return;
         }
+        const scrollStartOffset = currentScrollY.value;
+        const startTime = Date.now();
+        let shouldCancel = false;
+        const cleanup = onNextDidShow(() => {
+          shouldCancel = true;
+        });
+
         element.measureInWindow((x, y, width, height) => {
+          if (shouldCancel) {
+            return;
+          }
+          cleanup();
           futureKeyboardHeight.value = endCoordinates.height;
           futureKeyboardTopPos.value = endCoordinates.screenY;
-          scrollAnimationStartOffset.value = currentScrollY.value;
+          scrollAnimationStartOffset.value = scrollStartOffset;
           scrollAnimationElBottom.value = y + height;
+          console.log({
+            _time: Date.now() - startTime,
+            futureKeyboardHeight: endCoordinates.height,
+            futureKeyboardTopPos: endCoordinates.screenY,
+            scrollAnimationStartOffset: scrollStartOffset,
+            scrollAnimationElBottom: y + height,
+          });
         });
-      },
+      }),
     );
-    const hideSubscription = Keyboard.addListener("keyboardDidShow", () => {
-      futureKeyboardHeight.value = 0;
-      futureKeyboardTopPos.value = 0;
-      scrollAnimationStartOffset.value = 0;
-      scrollAnimationElBottom.value = 0;
-    });
+
+    subscriptions.add(
+      Keyboard.addListener("keyboardDidShow", () => {
+        console.log("keyboardDidShow");
+        futureKeyboardHeight.value = 0;
+        futureKeyboardTopPos.value = 0;
+        scrollAnimationStartOffset.value = 0;
+        scrollAnimationElBottom.value = 0;
+      }),
+    );
     return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
+      for (const subscription of subscriptions) {
+        subscription.remove();
+      }
     };
   }, []);
 
