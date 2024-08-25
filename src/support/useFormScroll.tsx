@@ -86,7 +86,7 @@ export function useFormScroll() {
         const scrollStartOffset = currentScrollY.value;
 
         Promise.race([
-          measureInWindow(element),
+          weakMap.get(element) ?? measureInWindow(element),
           nextKeyboardDidShow(),
           componentUnmountedPromise,
         ]).then((result) => {
@@ -116,14 +116,24 @@ export function useFormScroll() {
     };
   }, []);
 
-  const { onFocus, onBlur } = useMemo(() => {
+  const { weakMap, onFocus, onBlur } = useMemo(() => {
+    const weakMap = new WeakMap<TextInput, Promise<LayoutRectangle>>();
+
     const onFocus = (event: NativeSyntheticEvent<TextInputFocusEventData>) => {
-      focusedInputRef.current = event.target as TextInput;
+      const focusedInput = event.target as TextInput;
+      focusedInputRef.current = focusedInput;
+      weakMap.set(focusedInput, measureInWindow(focusedInput));
     };
+
     const onBlur = () => {
+      const focusedInput = focusedInputRef.current;
+      if (focusedInput) {
+        weakMap.delete(focusedInput);
+      }
       focusedInputRef.current = null;
     };
-    return { onFocus, onBlur };
+
+    return { weakMap, onFocus, onBlur };
   }, []);
 
   const keyboardSpacer = <Animated.View style={{ height: keyboard.height }} />;
