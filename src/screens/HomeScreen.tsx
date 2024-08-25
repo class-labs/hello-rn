@@ -1,9 +1,11 @@
 import { Platform } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Button, Input, Label, Paragraph, TextArea, View } from "tamagui";
+import { Button, Input, Paragraph, styled, TextArea, View } from "tamagui";
 
 import { useFormScroll } from "../support/useFormScroll";
+
+const Label = styled(Paragraph, { lineHeight: 26 });
 
 export function HomeScreen() {
   const safeAreaInsets = useSafeAreaInsets();
@@ -34,7 +36,7 @@ export function HomeScreen() {
           signing up you agree to our terms and services.
         </Paragraph>
         <View gap={4}>
-          <Label lineHeight={26}>Name</Label>
+          <Label>Name</Label>
           <Input
             onFocus={onFocus}
             onBlur={onBlur}
@@ -44,7 +46,7 @@ export function HomeScreen() {
           />
         </View>
         <View gap={4}>
-          <Label lineHeight={26}>Email</Label>
+          <Label>Email</Label>
           <Input
             onFocus={onFocus}
             onBlur={onBlur}
@@ -56,7 +58,7 @@ export function HomeScreen() {
           />
         </View>
         <View gap={4}>
-          <Label lineHeight={26}>Username</Label>
+          <Label>Username</Label>
           <Input
             onFocus={onFocus}
             onBlur={onBlur}
@@ -67,7 +69,7 @@ export function HomeScreen() {
           />
         </View>
         <View gap={4}>
-          <Label lineHeight={26}>Password</Label>
+          <Label>Password</Label>
           <Input
             onFocus={onFocus}
             onBlur={onBlur}
@@ -77,7 +79,7 @@ export function HomeScreen() {
           />
         </View>
         <View gap={4}>
-          <Label lineHeight={26}>Notes</Label>
+          <Label>Notes</Label>
           <TextArea
             onFocus={onFocus}
             onBlur={onBlur}
@@ -86,7 +88,7 @@ export function HomeScreen() {
           />
         </View>
         <View gap={4}>
-          <Label lineHeight={26}>Favorite color</Label>
+          <Label>Favorite color</Label>
           <Input
             onFocus={onFocus}
             onBlur={onBlur}
