@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   Keyboard,
   LayoutRectangle,
@@ -62,14 +62,6 @@ export function useFormScroll() {
       });
     });
 
-    const measureInWindow = (el: TextInput) => {
-      return new Promise<LayoutRectangle>((resolve) => {
-        el.measureInWindow((x, y, width, height) => {
-          resolve({ x, y, width, height });
-        });
-      });
-    };
-
     const nextKeyboardDidShow = () => {
       return new Promise<undefined>((resolve) => {
         const cleanup = () => {
@@ -85,7 +77,6 @@ export function useFormScroll() {
     const willShowSubscription = Keyboard.addListener(
       "keyboardWillShow",
       (event) => {
-        console.log("keyboardWillShow");
         const { endCoordinates } = event;
         const element = focusedInputRef.current;
         if (!element) {
@@ -93,9 +84,7 @@ export function useFormScroll() {
         }
 
         const scrollStartOffset = currentScrollY.value;
-        const startTime = Date.now();
 
-        // One of three things will happen first.
         Promise.race([
           measureInWindow(element),
           nextKeyboardDidShow(),
@@ -109,19 +98,11 @@ export function useFormScroll() {
           futureKeyboardTopPos.value = endCoordinates.screenY;
           scrollAnimationStartOffset.value = scrollStartOffset;
           scrollAnimationElBottom.value = y + height;
-          console.log({
-            _time: Date.now() - startTime,
-            futureKeyboardHeight: endCoordinates.height,
-            futureKeyboardTopPos: endCoordinates.screenY,
-            scrollAnimationStartOffset: scrollStartOffset,
-            scrollAnimationElBottom: y + height,
-          });
         });
       },
     );
 
     const didShowSubscription = Keyboard.addListener("keyboardDidShow", () => {
-      console.log("keyboardDidShow");
       futureKeyboardHeight.value = 0;
       futureKeyboardTopPos.value = 0;
       scrollAnimationStartOffset.value = 0;
@@ -135,12 +116,15 @@ export function useFormScroll() {
     };
   }, []);
 
-  const onFocus = (event: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    focusedInputRef.current = event.target as TextInput;
-  };
-  const onBlur = () => {
-    focusedInputRef.current = null;
-  };
+  const { onFocus, onBlur } = useMemo(() => {
+    const onFocus = (event: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      focusedInputRef.current = event.target as TextInput;
+    };
+    const onBlur = () => {
+      focusedInputRef.current = null;
+    };
+    return { onFocus, onBlur };
+  }, []);
 
   const keyboardSpacer = <Animated.View style={{ height: keyboard.height }} />;
 
@@ -151,4 +135,12 @@ export function useFormScroll() {
     onBlur,
     keyboardSpacer,
   };
+}
+
+function measureInWindow(el: TextInput) {
+  return new Promise<LayoutRectangle>((resolve) => {
+    el.measureInWindow((x, y, width, height) => {
+      resolve({ x, y, width, height });
+    });
+  });
 }
