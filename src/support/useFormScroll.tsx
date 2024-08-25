@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import {
-  EmitterSubscription,
   Keyboard,
+  LayoutRectangle,
   NativeSyntheticEvent,
   TextInput,
   TextInputFocusEventData,
@@ -54,24 +54,37 @@ export function useFormScroll() {
   });
 
   useEffect(() => {
-    const subscriptions = new Set<EmitterSubscription>();
-    const abortControllers = new Set<AbortController>();
+    const abortController = new AbortController();
 
-    const onNextDidShow = (callback: () => void) => {
-      const cleanup = () => {
-        subscriptions.delete(subscription);
-        subscription.remove();
-      };
-      const subscription = Keyboard.addListener("keyboardDidShow", () => {
-        cleanup();
-        callback();
+    const componentUnmountedPromise = new Promise<undefined>((resolve) => {
+      abortController.signal.addEventListener("abort", () => {
+        resolve(undefined);
       });
-      subscriptions.add(subscription);
-      return cleanup;
+    });
+
+    const measureInWindow = (el: TextInput) => {
+      return new Promise<LayoutRectangle>((resolve) => {
+        el.measureInWindow((x, y, width, height) => {
+          resolve({ x, y, width, height });
+        });
+      });
     };
 
-    subscriptions.add(
-      Keyboard.addListener("keyboardWillShow", (event) => {
+    const nextKeyboardDidShow = () => {
+      return new Promise<undefined>((resolve) => {
+        const cleanup = () => {
+          subscription.remove();
+        };
+        const subscription = Keyboard.addListener("keyboardDidShow", () => {
+          cleanup();
+          resolve(undefined);
+        });
+      });
+    };
+
+    const willShowSubscription = Keyboard.addListener(
+      "keyboardWillShow",
+      (event) => {
         console.log("keyboardWillShow");
         const { endCoordinates } = event;
         const element = focusedInputRef.current;
@@ -79,28 +92,19 @@ export function useFormScroll() {
           return;
         }
 
-        const abortController = new AbortController();
-        abortControllers.add(abortController);
-
         const scrollStartOffset = currentScrollY.value;
         const startTime = Date.now();
 
-        // TODO: Find a better abstraction for this next part.
-        // One of three things will happen first:
-        //  1. keyboardDidShow (in which case we should abort measureInWindow)
-        //  2. measureInWindow (in which case we should stop listening for keyboardDidShow)
-        //  2. component unmounts (in which case we should cancel the other two)
-
-        const cleanupDidShow = onNextDidShow(() => {
-          abortControllers.delete(abortController);
-          abortController.abort();
-        });
-
-        element.measureInWindow((x, y, width, height) => {
-          if (abortController.signal.aborted) {
+        // One of three things will happen first.
+        Promise.race([
+          measureInWindow(element),
+          nextKeyboardDidShow(),
+          componentUnmountedPromise,
+        ]).then((result) => {
+          if (!result) {
             return;
           }
-          cleanupDidShow();
+          const { y, height } = result;
           futureKeyboardHeight.value = endCoordinates.height;
           futureKeyboardTopPos.value = endCoordinates.screenY;
           scrollAnimationStartOffset.value = scrollStartOffset;
@@ -113,25 +117,21 @@ export function useFormScroll() {
             scrollAnimationElBottom: y + height,
           });
         });
-      }),
+      },
     );
 
-    subscriptions.add(
-      Keyboard.addListener("keyboardDidShow", () => {
-        console.log("keyboardDidShow");
-        futureKeyboardHeight.value = 0;
-        futureKeyboardTopPos.value = 0;
-        scrollAnimationStartOffset.value = 0;
-        scrollAnimationElBottom.value = 0;
-      }),
-    );
+    const didShowSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      console.log("keyboardDidShow");
+      futureKeyboardHeight.value = 0;
+      futureKeyboardTopPos.value = 0;
+      scrollAnimationStartOffset.value = 0;
+      scrollAnimationElBottom.value = 0;
+    });
+
     return () => {
-      for (const abortController of abortControllers) {
-        abortController.abort();
-      }
-      for (const subscription of subscriptions) {
-        subscription.remove();
-      }
+      abortController.abort();
+      willShowSubscription.remove();
+      didShowSubscription.remove();
     };
   }, []);
 
