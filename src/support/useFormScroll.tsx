@@ -55,6 +55,7 @@ export function useFormScroll() {
 
   useEffect(() => {
     const subscriptions = new Set<EmitterSubscription>();
+    const abortControllers = new Set<AbortController>();
 
     const onNextDidShow = (callback: () => void) => {
       const cleanup = () => {
@@ -77,18 +78,29 @@ export function useFormScroll() {
         if (!element) {
           return;
         }
+
+        const abortController = new AbortController();
+        abortControllers.add(abortController);
+
         const scrollStartOffset = currentScrollY.value;
         const startTime = Date.now();
-        let shouldCancel = false;
-        const cleanup = onNextDidShow(() => {
-          shouldCancel = true;
+
+        // TODO: Find a better abstraction for this next part.
+        // One of three things will happen first:
+        //  1. keyboardDidShow (in which case we should abort measureInWindow)
+        //  2. measureInWindow (in which case we should stop listening for keyboardDidShow)
+        //  2. component unmounts (in which case we should cancel the other two)
+
+        const cleanupDidShow = onNextDidShow(() => {
+          abortControllers.delete(abortController);
+          abortController.abort();
         });
 
         element.measureInWindow((x, y, width, height) => {
-          if (shouldCancel) {
+          if (abortController.signal.aborted) {
             return;
           }
-          cleanup();
+          cleanupDidShow();
           futureKeyboardHeight.value = endCoordinates.height;
           futureKeyboardTopPos.value = endCoordinates.screenY;
           scrollAnimationStartOffset.value = scrollStartOffset;
@@ -114,6 +126,9 @@ export function useFormScroll() {
       }),
     );
     return () => {
+      for (const abortController of abortControllers) {
+        abortController.abort();
+      }
       for (const subscription of subscriptions) {
         subscription.remove();
       }
