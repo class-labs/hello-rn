@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   Keyboard,
   NativeSyntheticEvent,
@@ -8,8 +8,6 @@ import {
 import Animated, {
   Easing,
   KeyboardState,
-  runOnUI,
-  scrollTo,
   useAnimatedKeyboard,
   useAnimatedProps,
   useAnimatedRef,
@@ -21,7 +19,6 @@ import Animated, {
 
 export function useFormScroll() {
   const focusedInputRef = useRef<TextInput | null>(null);
-  const [layoutEmitter] = useState(() => new LayoutEmitter());
   const keyboard = useAnimatedKeyboard();
   const futureKeyboardHeight = useSharedValue(0);
   const spaceForKeyboard = useDerivedValue(() => {
@@ -90,12 +87,7 @@ export function useFormScroll() {
     focusedInputRef.current = null;
   };
 
-  const keyboardSpacer = (
-    <Animated.View
-      onLayout={() => layoutEmitter.emitLayout()}
-      style={{ height: spaceForKeyboard }}
-    />
-  );
+  const keyboardSpacer = <Animated.View style={{ height: spaceForKeyboard }} />;
 
   return {
     animatedScrollViewRef,
@@ -104,22 +96,4 @@ export function useFormScroll() {
     onBlur,
     keyboardSpacer,
   };
-}
-
-class LayoutEmitter {
-  listeners = new Set<() => void>();
-
-  emitLayout() {
-    this.listeners.forEach((listener) => listener());
-  }
-
-  onNextLayout(listener: () => void, options: { timeout: number }) {
-    const listenerWithCleanup = () => {
-      clearTimeout(timeoutId);
-      this.listeners.delete(listenerWithCleanup);
-      listener();
-    };
-    this.listeners.add(listenerWithCleanup);
-    const timeoutId = setTimeout(listenerWithCleanup, options.timeout);
-  }
 }
