@@ -6,77 +6,78 @@ import {
   TextInputFocusEventData,
 } from "react-native";
 import Animated, {
-  Easing,
-  KeyboardState,
   useAnimatedKeyboard,
   useAnimatedProps,
   useAnimatedRef,
   useDerivedValue,
   useScrollViewOffset,
   useSharedValue,
-  withTiming,
 } from "react-native-reanimated";
 
 export function useFormScroll() {
+  const animatedScrollViewRef = useAnimatedRef<Animated.ScrollView>();
   const focusedInputRef = useRef<TextInput | null>(null);
   const keyboard = useAnimatedKeyboard();
+
+  const currentScrollY = useScrollViewOffset(animatedScrollViewRef);
+
+  // The following 4 pieces of information is what we need to accurately scroll
+  // the element into view while the keyboard is animating into position.
   const futureKeyboardHeight = useSharedValue(0);
-  const spaceForKeyboard = useDerivedValue(() => {
-    if (keyboard.state.value === KeyboardState.OPENING) {
-      return Math.max(keyboard.height.value, futureKeyboardHeight.value);
+  const futureKeyboardTopPos = useSharedValue(0);
+  const scrollAnimationStartOffset = useSharedValue(0);
+  const scrollAnimationElBottom = useSharedValue(0);
+
+  const offsetY = useDerivedValue<number | undefined>(() => {
+    const elementBottomPosition = scrollAnimationElBottom.value;
+    const endKeyboardTop = futureKeyboardTopPos.value;
+    const endKeyboardHeight = futureKeyboardHeight.value;
+    const currentKeyboardHeight = Math.max(keyboard.height.value, 0);
+    if (!currentKeyboardHeight || !endKeyboardHeight) {
+      return;
     }
-    return keyboard.height.value;
+    const currentKeyboardTop =
+      endKeyboardTop + (endKeyboardHeight - currentKeyboardHeight);
+    if (currentKeyboardTop > elementBottomPosition) {
+      return;
+    }
+    const scrollBy = elementBottomPosition - currentKeyboardTop;
+    return scrollBy + scrollAnimationStartOffset.value;
   });
 
-  const animatedScrollViewRef = useAnimatedRef<Animated.ScrollView>();
-  const currentScrollY = useScrollViewOffset(animatedScrollViewRef);
-  const offsetY = useSharedValue(0);
-
   const animatedProps = useAnimatedProps(() => {
+    const y = offsetY.value;
     return {
-      contentOffset: { y: offsetY.value, x: 0 },
+      contentOffset: y === undefined ? undefined : { y, x: 0 },
     };
   });
 
   useEffect(() => {
-    const scrollToPosition = (scrollTo: number, duration: number) => {
-      offsetY.value = currentScrollY.value;
-      offsetY.value = withTiming(scrollTo, {
-        duration,
-        // TODO: Tweak this
-        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-      });
-    };
-    const scrollByAmount = (amountToScroll: number, duration: number) => {
-      const currentScrollOffset = currentScrollY.value;
-      const targetScrollOffset = currentScrollOffset + amountToScroll;
-      console.log(`Current scroll offset: ${currentScrollOffset}`);
-      console.log(`Amount to scroll: ${amountToScroll}`);
-      console.log(`Scroll to: ${targetScrollOffset}`);
-      scrollToPosition(targetScrollOffset, duration);
-    };
     const showSubscription = Keyboard.addListener(
       "keyboardWillShow",
       (event) => {
-        const { endCoordinates, duration } = event;
-        futureKeyboardHeight.value = endCoordinates.height;
+        const { endCoordinates } = event;
         const element = focusedInputRef.current;
         if (!element) {
           return;
         }
-        const keyboardTopPosition = endCoordinates.screenY;
         element.measureInWindow((x, y, width, height) => {
-          const elementBottomPosition = y + height;
-          if (elementBottomPosition <= keyboardTopPosition) {
-            return;
-          }
-          const amountToScroll = elementBottomPosition - keyboardTopPosition;
-          scrollByAmount(amountToScroll, duration);
+          futureKeyboardHeight.value = endCoordinates.height;
+          futureKeyboardTopPos.value = endCoordinates.screenY;
+          scrollAnimationStartOffset.value = currentScrollY.value;
+          scrollAnimationElBottom.value = y + height;
         });
       },
     );
+    const hideSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      futureKeyboardHeight.value = 0;
+      futureKeyboardTopPos.value = 0;
+      scrollAnimationStartOffset.value = 0;
+      scrollAnimationElBottom.value = 0;
+    });
     return () => {
       showSubscription.remove();
+      hideSubscription.remove();
     };
   }, []);
 
@@ -87,7 +88,7 @@ export function useFormScroll() {
     focusedInputRef.current = null;
   };
 
-  const keyboardSpacer = <Animated.View style={{ height: spaceForKeyboard }} />;
+  const keyboardSpacer = <Animated.View style={{ height: keyboard.height }} />;
 
   return {
     animatedScrollViewRef,
