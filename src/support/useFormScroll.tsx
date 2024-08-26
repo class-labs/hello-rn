@@ -7,6 +7,8 @@ import {
   TextInputFocusEventData,
 } from "react-native";
 import Animated, {
+  runOnUI,
+  scrollTo,
   useAnimatedKeyboard,
   useAnimatedProps,
   useAnimatedRef,
@@ -80,6 +82,26 @@ export function useFormScroll() {
         const { endCoordinates } = event;
         const element = focusedInputRef.current;
         if (!element) {
+          return;
+        }
+
+        // Keyboard is already shown (e.g. changing focus from one input to
+        // another, potentially with different keyboard types), we just need to
+        // scroll the element into view
+        if (keyboard.height.value === endCoordinates.height) {
+          // TODO: Factor out this logic and share it with above
+          const scrollStartOffset = currentScrollY.value;
+          measureInWindow(element).then(({ y, height }) => {
+            const elementBottomPosition = y + height;
+            const currentKeyboardTop = endCoordinates.screenY;
+            if (currentKeyboardTop > elementBottomPosition) {
+              return;
+            }
+            const scrollBy = elementBottomPosition - currentKeyboardTop;
+            runOnUI((scrollOffset: number) => {
+              scrollTo(animatedScrollViewRef, 0, scrollOffset, true);
+            })(scrollBy + scrollStartOffset);
+          });
           return;
         }
 
