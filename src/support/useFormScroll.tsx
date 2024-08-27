@@ -92,6 +92,7 @@ export function useFormScroll() {
           // TODO: Factor out this logic and share it with above
           const scrollStartOffset = currentScrollY.value;
           measureInWindow(element).then(({ y, height }) => {
+            // TODO: Offset bottom position by some max value from top of element
             const elementBottomPosition = y + height;
             const currentKeyboardTop = endCoordinates.screenY;
             if (currentKeyboardTop > elementBottomPosition) {
@@ -119,6 +120,7 @@ export function useFormScroll() {
           futureKeyboardHeight.value = endCoordinates.height;
           futureKeyboardTopPos.value = endCoordinates.screenY;
           scrollAnimationStartOffset.value = scrollStartOffset;
+          // TODO: Offset bottom position by some max value from top of element
           scrollAnimationElBottom.value = y + height;
         });
       },
