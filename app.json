@@ -24,6 +24,9 @@
     "plugins": [
       "expo-router",
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "productionApiHost": "https://api.example.com"
+    }
   }
 }
