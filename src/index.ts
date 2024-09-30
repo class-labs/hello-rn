@@ -1,2 +1,2 @@
-import './support/init';
+import '~/support/init';
 import 'expo-router/entry';

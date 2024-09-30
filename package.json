@@ -66,6 +66,9 @@
       "^react-native$",
       "<THIRD_PARTY_MODULES>",
       "",
+      "^@assets/",
+      "^~/",
+      "",
       "^[./]"
     ]
   },
