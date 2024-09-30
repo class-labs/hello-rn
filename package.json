@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "expo/AppEntry.js",
   "scripts": {
-    "start": "expo start"
+    "start": "expo start",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run typecheck"
   },
   "dependencies": {
     "expo": "~51.0.28",
@@ -12,7 +14,10 @@
     "react-native": "0.74.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.25.2",
+    "@types/babel__core": "^7.20.5",
+    "@types/react": "~18.2.79",
+    "typescript": "~5.3.3"
   },
   "private": true
 }
