@@ -2,7 +2,7 @@ import { useEffect, type ReactNode } from 'react';
 import { SafeAreaView, Text, View } from 'react-native';
 import { useFonts } from 'expo-font';
 
-import { fonts } from '../config/fonts';
+import { fonts } from '~/config/fonts';
 
 type Props = {
   onInitialized: () => void;

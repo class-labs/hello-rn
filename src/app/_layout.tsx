@@ -1,6 +1,6 @@
 import { Slot, SplashScreen } from 'expo-router';
 
-import { AppProvider } from '../providers/AppProvider';
+import { AppProvider } from '~/providers/AppProvider';
 
 void SplashScreen.preventAutoHideAsync();
 

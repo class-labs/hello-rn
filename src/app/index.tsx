@@ -1,6 +1,6 @@
 import { Home } from '@tamagui/lucide-icons';
 
-import { Button, Text, YStack } from '../components/core';
+import { Button, Text, YStack } from '~/components/core';
 
 export default function App() {
   return (

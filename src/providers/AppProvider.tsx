@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
-import { FontProvider } from './FontProvider';
-import { ThemeProvider } from './ThemeProvider';
+import { FontProvider } from '~/providers/FontProvider';
+import { ThemeProvider } from '~/providers/ThemeProvider';
 
 type Props = {
   onInitialized: () => void;

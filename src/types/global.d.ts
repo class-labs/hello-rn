@@ -1,7 +1,7 @@
 /* eslint-disable no-var, @typescript-eslint/consistent-type-definitions */
 import '@total-typescript/ts-reset';
 
-import type { TFn } from '../support/intl';
+import type { TFn } from '~/support/intl';
 
 declare global {
   // NOTE: Need to use `var` and not `const` here for weird TS reasons.
