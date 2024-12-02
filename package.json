@@ -5,7 +5,9 @@
   "scripts": {
     "start": "expo start",
     "typecheck": "tsc --noEmit",
-    "test": "npm run typecheck"
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "npm run typecheck && npm run format:check"
   },
   "dependencies": {
     "expo": "~52.0.11",
@@ -21,7 +23,19 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.3.12",
+    "prettier": "^3.4.1",
     "typescript": "^5.3.3"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "app.json",
+        "options": {
+          "parser": "json-stringify"
+        }
+      }
+    ]
   },
   "private": true
 }
