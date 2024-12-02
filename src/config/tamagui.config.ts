@@ -1,7 +1,22 @@
 import { config } from '@tamagui/config/v2-reanimated';
 import { createTamagui } from 'tamagui';
 
-const tamaguiConfig = createTamagui(config);
+const { themes } = config;
+
+const tamaguiConfig = createTamagui({
+  ...config,
+  themes: {
+    ...themes,
+    dark: {
+      ...themes.dark,
+      pageBackground: '#0E1116',
+    },
+    light: {
+      ...themes.light,
+      pageBackground: 'white',
+    },
+  },
+});
 
 // This makes typescript properly type everything based on the config
 type Conf = typeof tamaguiConfig;

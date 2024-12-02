@@ -1,8 +1,27 @@
 import type { ReactNode } from 'react';
-import { TamaguiProvider } from 'tamagui';
+import { useColorScheme } from 'react-native';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider as NavigationThemeProvider,
+} from '@react-navigation/native';
+import { TamaguiProvider, Theme, YStack } from 'tamagui';
 
 import config from '../config/tamagui.config';
 
 export function ThemeProvider(props: { children: ReactNode }) {
-  return <TamaguiProvider config={config}>{props.children}</TamaguiProvider>;
+  const colorScheme = useColorScheme();
+  return (
+    <TamaguiProvider config={config}>
+      <Theme name={colorScheme === 'dark' ? 'dark' : 'light'}>
+        <NavigationThemeProvider
+          value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+        >
+          <YStack flex={1} backgroundColor="$pageBackground">
+            {props.children}
+          </YStack>
+        </NavigationThemeProvider>
+      </Theme>
+    </TamaguiProvider>
+  );
 }
