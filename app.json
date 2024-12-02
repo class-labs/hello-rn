@@ -1,8 +1,9 @@
 {
   "expo": {
-    "name": "hello-rn",
+    "name": "Hello RN",
     "slug": "hello-rn",
-    "version": "1.0.0",
+    "scheme": "hello-rn",
+    "version": "0.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
